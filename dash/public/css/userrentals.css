@@ -1,0 +1,112 @@
+:root {
+    --primary-color: #ffffff; /* White for background */
+    --secondary-color: #0a2751; /* Blue for card background and header */
+    --button-color: #EA001E; /* Red for button and status cancelled */
+    --date-color: #b4b4b4; /* Bright yellow for dates */
+    --time-color: #e74c3c; /* Red for times */
+    --text-color: #333333; /* Dark grey text for contrast */
+    --font-family: 'Roboto', sans-serif;
+    --heading-font: 'Montserrat', sans-serif;
+}
+
+body {
+    color: var(--text-color);
+    font-family: var(--font-family);
+    background-color: var(--primary-color);
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    background: var(--secondary-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: var(--button-color); 
+    border: none;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: darkred; /* Darker red on hover */
+    transform: scale(1.05);
+}
+
+.form-label {
+    font-weight: 700;
+    font-family: var(--heading-font);
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.form-select, .form-control {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--text-color);
+    border-radius: 0.5rem;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-select:focus, .form-control:focus {
+    background: rgba(255, 255, 255, 1);
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(41, 128, 185, 0.5);
+    transform: scale(1.02);
+}
+
+@media (max-width: 768px) {
+    .carousel-inner img {
+        height: 250px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .comments-section {
+        padding: 1rem;
+    }
+}
+
+.status-canceled {
+    color: red; 
+}
+
+.status-active {
+    color: #27ae60; 
+}
+
+.card-text strong {
+    color: var(--date-color);
+}
+
+.fade-in {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.fade-in.visible {
+    opacity: 1;
+}
+.card-gray{
+    background-color: black
+}
