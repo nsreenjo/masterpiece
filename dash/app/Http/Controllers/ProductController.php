@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -13,19 +14,49 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $productsFromDB = Product::with('category')->get();
-
+        // الحصول على دور المستخدم (أو يمكنك التحقق من نوع المستخدم إذا كنت تستخدم طريقة مختلفة لتحديد الأدوار)
+        $user = Auth::user();
+    
+        // إذا كان المستخدم هو سوبر أدمن، استرجع جميع المنتجات
+        if ($user->type === 'superAdmin') { // استبدل 'role' و 'super_admin' بالقيم الصحيحة من مشروعك
+            $productsFromDB = Product::with('category')->get();
+        } else {
+            // الحصول على معرف المول الخاص بالمستخدم الحالي
+            $userMallId = $user->mall_id;
+    
+            // استرجاع المنتجات الخاصة بالمول فقط
+            $productsFromDB = Product::with(['category' => function ($query) use ($userMallId) {
+                $query->where('mall_id', $userMallId);
+            }])
+            ->whereHas('category', function ($query) use ($userMallId) {
+                $query->where('mall_id', $userMallId);
+            })
+            ->get();
+        }
+    
         return view("dashboard.products.index", ["products" => $productsFromDB]);
     }
+    
+    
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $categories = Category::all(); // جلب جميع الفئات
-        return view('dashboard.products.create', compact('categories'));
+   public function create()
+{
+    $userMallId = Auth::user()->mall_id; // الحصول على معرف المول الخاص بالمستخدم
+    
+    // جلب الفئات الخاصة بالمول فقط
+    $categories = Category::where('mall_id', $userMallId)->get();
+
+    // إذا لم يتم العثور على فئات، يمكن تقديم رسالة أو إجراء آخر
+    if ($categories->isEmpty()) {
+        // يمكن إضافة منطق إضافي هنا إذا كان ضرورياً
     }
+
+    return view('dashboard.products.create', compact('categories')); // تمرير الفئات إلى العرض
+}
+
     
     
 

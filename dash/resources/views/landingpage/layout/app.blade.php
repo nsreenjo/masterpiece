@@ -6,7 +6,6 @@
 
 	<!-- Sidebar -->
 	
-	@include('landingpage.include.side')
 
 
 	<!-- Cart -->

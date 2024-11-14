@@ -6,7 +6,28 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\productController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\shopController;
+use App\Http\Controllers\AhmadController;
+use App\Http\Controllers\AswaqController;
+use App\Http\Controllers\MamonController;
+use App\Http\Controllers\CartController;
+
+use App\Http\Controllers\ProductDetailsController;
 use App\Http\Controllers\landingpageController;
+use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Http\Request;
+use App\Http\Middleware\checkAdmin;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ContantController;
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ShoppingCartController;
+
+
+
+// تحديد الراوت لعرض المول باستخدام اسم المول
+// web.php
+
+Route::get('/mall/{mall_id}', [MallController::class, 'showland'])->name('mall.show');
 
 
 
@@ -21,22 +42,58 @@ use App\Http\Controllers\landingpageController;
 |
 */
 
+
+
+
+// web.php (Routes)
+
+// web.php
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/contant', [ContantController::class, 'index'])->name('contant.index');
+Route::get('/about', [AboutController::class, 'index'])->name('about.index');
+
+Route::get('/productDetails/{id}', [ProductDetailsController::class, 'show'])->name('productDetails.show');
+Route::post('/add-to-cart/{id}', [ProductDetailsController::class, 'addToCart'])->name('addToCart');
+
+
+Route::post('/add-to-cart', [ShoppingCartController::class, 'addToCart'])->name('add.to.cart');
+Route::get('/cart', [ShoppingCartController::class, 'index'])->name('cart.index');
+Route::get('/checkout', [ShoppingCartController::class, 'checkout'])->name('checkout.index');
+Route::post('/update-cart', [ShoppingCartController::class, 'updateCart'])->name('cart.update');
+Route::delete('/remove-from-cart/{productId}', [ShoppingCartController::class, 'removeFromCart'])->name('cart.remove');
+
+
+Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+Route::post('cart/delete/{id}', [CartController::class, 'deleteCartItem'])->name('cart.delete');
+Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+
+
+
+
+Route::post('/register', [UserController::class, 'store'])->name('register');
+
+
+
 Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+
+
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Route::get('/land', function () {
 //     return view('landingpage.layout.app');
 // });
 
 
-Route::get('/d', function () {
-    return view('dashboard.index');
-});
+
 /////////////////////////////////////render mall /////////////////////////////
 
 Route::get('/malls-categories-by-email/{email}', [CategoryController::class, 'getMallCategoriesByEmail']);
@@ -121,5 +178,32 @@ Route::get('dashboard/comments/{id}', [CommentController::class, 'show'])->name(
 
 Route::delete('dashboard/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
-///////////////////////////////////// single product /////////////////////////////
+///////////////////////////////////// register /////////////////////////////
+
+Route::post('/register', [UserController::class, 'register'])->name('register');
+
+
+/////////////////////////////////////////////////////////////////
+
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+
+
+
+
+
+
+
+
+Route::get('/landingpags', [LandingPageController::class, 'index'])->name('landingpags.index');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware('check.admin');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+///////////////////////////////////////////// shop//////////////////////////////////
+Route::get('/mall/{mall_id}/landing', [MallController::class, 'showland'])->name('landing.showland');
+
+Route::get('/shop', [shopController::class, 'index'])->name('shop.index');
+///////////////////////////////////////  ahmad almasry mall///////////////////////////////////////////
+// Route::get('/ahmadAlmasry', [AhmadController::class, 'index'])->name('ahmad.index');
+// Route::get('/aswaqaltawfer', [AswaqController::class, 'index'])->name('aswaq.index');
+// Route::get('/mamoncenter', [MamonController::class, 'index'])->name('mamon.index');
 

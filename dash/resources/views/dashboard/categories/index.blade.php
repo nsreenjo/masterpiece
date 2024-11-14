@@ -1,51 +1,52 @@
 @extends('dashboard.layout.master')
-@section('title', 'categories')
+@section('title', 'Categories List')
 @section('content')
-    <div class="text-left">
-        <a href="{{ route('categories.create') }}" class="btn btn-success waves-effect waves-light">+Add category</a>
+    <div class="text-left mb-3">
+        <a href="{{ route('categories.create') }}" class="btn btn-success waves-effect waves-light">+ Add Category</a>
     </div>
+    
     <div class="card">
-        <h5 class="card-header">categories</h5>
+        <h5 class="card-header">Categories List</h5>
         <div class="table-responsive text-nowrap">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="table-border-bottom-0">
-                    @foreach($categories as $category)
+            @if($categories->isEmpty())
+                <div class="alert alert-warning">No categories available.</div>
+            @else
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>{{ $category->category_id }}</td>
-                            <td><img src="{{ asset('uploads/categories/' . $category->category_img) }}" alt="Mall Logo" width="50"></td>
-
-                            <td>{{ $category->category_name }}</td>
-                            <td>{{ $category->category_descrbtion}}</td>
-                            <td>
-                                <a href="{{ route('categories.show', $category->category_id) }}" class="btn btn-info btn-sm">View</a>
-                                <a href="{{ route('categories.edit', $category->category_id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                <form action="{{ route('categories.destroy', $category->category_id) }}" method="POST" style="display:inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm dlt-btn-t" onclick="confirmDelete({{ $category->category_id }})">Delete</button>
-                                    </form>
-                            </td>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Actions</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach($categories as $category)
+                            <tr>
+                                <td>{{ $category->category_id }}</td>
+                                <td><img src="{{ asset('uploads/categories/' . $category->category_img) }}" alt="Category Image" width="50"></td>
+                                <td>{{ $category->category_name }}</td>
+                                <td>{{ $category->category_descrbtion }}</td>
+                                <td>
+                                    <a href="{{ route('categories.show', $category->category_id) }}" class="btn btn-info btn-sm">View</a>
+                                    <a href="{{ route('categories.edit', $category->category_id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                    <form action="{{ route('categories.destroy', $category->category_id) }}" method="POST" style="display:inline-block;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm dlt-btn-t">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
     </div>
 
-
     <script>
-        // Wait until the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Select all delete buttons with the class 'dlt-btn-t'
             const deleteButtons = document.querySelectorAll('.dlt-btn-t');
 
             deleteButtons.forEach(function(button) {
@@ -61,7 +62,6 @@
                         confirmButtonText: 'Yes, delete it!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // Submit the form if the user confirms
                             button.closest('form').submit();
                         }
                     });
@@ -70,5 +70,3 @@
         });
     </script>
 @endsection
-
-

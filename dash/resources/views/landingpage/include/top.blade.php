@@ -45,42 +45,63 @@
 					
 					<!-- Logo desktop -->		
 					<a href="#" class="logo">
-						<img src="{{ asset('assets/images/icons/logo-01.png') }}" alt="IMG-LOGO">
+					<img src="{{ asset('assets/images/icons/Dalilak shop (1).png') }}"   alt="IMG-LOGO">
 					</a>
 
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
 						<ul class="main-menu">
 							<li class="active-menu">
-								<a href="{{ asset('assets/index.html') }}">Home</a>
-								<ul class="sub-menu">
+								<a href="{{ route('landingpags.index')  }}">Home</a>
+								<!-- <ul class="sub-menu">
 									<li><a href="index.html">Homepage 1</a></li>
 									<li><a href="home-02.html">Homepage 2</a></li>
 									<li><a href="home-03.html">Homepage 3</a></li>
-								</ul>
+								</ul> -->
 							</li>
 
 							<li>
-								<a href="product.html">Shop</a>
+								<a href="{{ route('shop.index')  }}">Shop</a>
 							</li>
-
-							<li class="label1" data-label1="hot">
-								<a href="shoping-cart.html">Features</a>
+			
+							<li>
+								<a href="{{ route('about.index')  }}">About</a>
 							</li>
 
 							<li>
-								<a href="blog.html">Blog</a>
-							</li>
-
-							<li>
-								<a href="about.html">About</a>
-							</li>
-
-							<li>
-								<a href="contact.html">Contact</a>
+								<a href="{{ route('contant.index')  }}">Contact</a>
 							</li>
 						</ul>
+						
 					</div>	
+<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+					<body class="antialiased">
+    <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
+        @if (Route::has('login'))
+            <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right">
+                @auth
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
+                            Log out
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
+
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
+                    @endif
+                @endauth
+            </div>
+        @endif
+    </div>
+</body>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////// -->
+
+
+   
 
 					<!-- Icon header -->
 					<div class="wrap-icon-header flex-w flex-r-m h-full">
@@ -91,16 +112,15 @@
 						</div>
 							
 						<div class="flex-c-m h-full p-l-18 p-r-25 bor5">
-							<div class="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 icon-header-noti js-show-cart" data-notify="2">
+							<div class="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 icon-header-noti js-show-cart" data-notify="0">
 								<i class="zmdi zmdi-shopping-cart"></i>
 							</div>
 						</div>
+
+
+
 							
-						<div class="flex-c-m h-full p-lr-19">
-							<div class="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 js-show-sidebar">
-								<i class="zmdi zmdi-menu"></i>
-							</div>
-						</div>
+						
 					</div>
 				</nav>
 			</div>	
@@ -110,7 +130,7 @@
 		<div class="wrap-header-mobile">
 			<!-- Logo moblie -->		
 			<div class="logo-mobile">
-				<a href="index.html"><img src="{{ asset('assets/images/icons/logo-01.png') }}" alt="IMG-LOGO"></a>
+				<a href="index.html"><img src="{{ asset('assets/images/icons/Dalilak shop.png') }}" alt="IMG-LOGO"></a>
 			</div>
 
 			<!-- Icon header -->
@@ -122,7 +142,7 @@
 				</div>
 
 				<div class="flex-c-m h-full p-lr-10 bor5">
-					<div class="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 icon-header-noti js-show-cart" data-notify="2">
+					<div class="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 icon-header-noti js-show-cart" data-notify="0">
 						<i class="zmdi zmdi-shopping-cart"></i>
 					</div>
 				</div>

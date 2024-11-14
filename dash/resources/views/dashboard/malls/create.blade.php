@@ -26,6 +26,7 @@
                         <input type="text" name="mall_name" value="{{ old('mall_name') }}" class="form-control" id="exampleFormControlInput1" placeholder="Mall Name">
                         <label for="exampleFormControlInput1">Name</label>
                     </div>
+                   
                     <div class="form-floating form-floating-outline mb-6">
                         <input type="text" name="mall_address" value="{{ old('mall_address') }}" class="form-control" id="exampleFormControlInput2" placeholder="Mall Address">
                         <label for="exampleFormControlInput2">Address</label>

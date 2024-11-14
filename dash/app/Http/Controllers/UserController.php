@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
 class UserController extends Controller
 {
     public function index()
@@ -25,14 +24,23 @@ class UserController extends Controller
             'user_first_name' => 'required|string|max:15|regex:/^\S*$/u', 
             'user_last_name' => 'required|string|max:15|regex:/^\S*$/u',
             'user_email' => 'required|email|unique:users,user_email|max:255',
-            'user_password' => ['required', 'confirmed'],
+            'user_password' => 'required|confirmed',
             'user_mobile' => 'required|numeric|digits_between:9,15',
             'user_address' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
             'date_of_birth' => 'required|date',
             'user_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'role' => 'required|in:user,admin,superadmin',
+
+
         ]);
+
+       
+
+       
+        
+
+
 
         $imgName = null;
         if ($request->hasFile('user_image')) {
@@ -84,24 +92,19 @@ class UserController extends Controller
             'role' => 'required|in:user,admin,superadmin',
         ]);
     
-        // جلب المستخدم المراد تعديله
         $user = User::findOrFail($id);
     
-        // معالجة رفع الصورة
         if ($request->hasFile('user_image')) {
-            // حذف الصورة القديمة إذا كانت موجودة
             if ($user->user_image && file_exists(public_path('uploads/users/' . $user->user_image))) {
                 unlink(public_path('uploads/users/' . $user->user_image));
             }
     
-            // رفع الصورة الجديدة
             $img = $request->file('user_image');
             $imgName = time() . '.' . $img->getClientOriginalExtension();
             $img->move(public_path('uploads/users'), $imgName);
             $user->user_image = $imgName;
         }
     
-        // تحديث المعلومات
         $user->update([
             'user_first_name' => $request->user_first_name,
             'user_last_name' => $request->user_last_name,
@@ -110,7 +113,7 @@ class UserController extends Controller
             'user_address' => $request->user_address,
             'gender' => $request->gender,
             'date_of_birth' => $request->date_of_birth,
-            'type' => $request->role, // استخدام type بدلاً من role
+            'type' => $request->role, 
         ]);
     
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
@@ -120,7 +123,6 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
     
-        // حذف الصورة من المجلد
         if ($user->user_image && file_exists(public_path('uploads/users/' . $user->user_image))) {
             unlink(public_path('uploads/users/' . $user->user_image));
         }
@@ -128,4 +130,65 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'user_first_name' => 'required|string|max:255',
+            'user_last_name' => 'required|string|max:255',
+            'user_email' => 'required|string|email|max:255|unique:users',
+            'user_mobile' => 'required|string|max:15',
+            'user_address' => 'required|string|max:255',
+            'gender' => 'required|string',
+            'date_of_birth' => 'required|date',
+            'user_password' => 'required|string|min:8|confirmed',
+        ]);
+    
+        User::create([
+            'user_first_name' => $request->user_first_name,
+            'user_last_name' => $request->user_last_name,
+            'user_email' => $request->user_email,
+           'user_mobile' => $request->user_mobile,
+            'user_address' => $request->user_address,
+            'gender' => $request->gender,
+            'date_of_birth' => $request->date_of_birth,
+            'user_password' => bcrypt($request->user_password),
+        ]);
+    
+        return redirect()->route('login.form')->with('success', 'Registration successful!');
+    }
+
+
+///////////////////////////////////////////////////////////
+
+
+
+public function login(Request $request)
+{
+    $request->validate([
+        'user_email' => 'required|string|email|max:255',
+        'user_password' => 'required|string|min:8',
+    ]);
+
+    if (Auth::attempt(['email' => $request->user_email, 'password' => $request->user_password])) {
+        $user = Auth::user(); 
+
+        if ($user->type == 'admin' || $user->type == 'super_admin') {
+            return redirect()->intended('dashboard')->with('success', 'Welcome to the Admin Dashboard!');
+        } else {
+            return redirect()->route('landingpags')->with('success', 'Welcome back!');
+        }
+    }
+
+    return back()->withErrors([
+        'user_email' => 'The provided credentials do not match our records.',
+    ])->onlyInput('user_email');
+}
+
+
+
+
 }

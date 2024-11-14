@@ -5,155 +5,138 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Mall;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
+    // عرض الكاتيجوري المرتبطة بالمول الخاص بالمستخدم فقط
     public function index()
     {
-        $categoriesFromDB = Category::with('mall')->get();
-        return view('dashboard.categories.index', ['categories' => $categoriesFromDB]);
+        $user = Auth::user();
+    
+        if ($user->type === 'superAdmin') {
+            // إذا كان المستخدم سوبر أدمن، جلب جميع الفئات
+            $categories = Category::all();
+        } else {
+            // إذا لم يكن سوبر أدمن، جلب الفئات المرتبطة بالمول الخاص بالمستخدم فقط
+            $categories = Category::where('mall_id', $user->mall_id)->get();
+        }
+    
+        return view('dashboard.categories.index', ['categories' => $categories]);
     }
+    
 
+    // عرض صفحة إنشاء كاتيجوري جديدة
     public function create()
     {
-        $malls = Mall::all(); 
-        return view('dashboard.categories.create', compact('malls')); 
+        $malls = Mall::all(); // احضار جميع المولات
+        return view('dashboard.categories.create', compact('malls'));
     }
+    
 
+    // تخزين كاتيجوري جديدة مرتبطة بالمول الخاص بالمستخدم
     public function store(Request $request)
     {
         $request->validate([
-            'category_name' => 'required',
-            'category_descrbtion' => 'required',
-            'category_img' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'mall_id' => 'required',
+            'category_name' => 'required|string|max:255',
+            'category_descrbtion' => 'nullable|string|max:1000',
+            'category_img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $img = $request->file('category_img');
-        $ImgName = null;
+        $category = new Category();
+        $category->category_name = $request->category_name;
+        $category->category_descrbtion = $request->category_descrbtion;
+        $category->mall_id = Auth::user()->mall_id;
 
-        if ($img) {
-            if (!file_exists(public_path('uploads/categories'))) {
-                mkdir(public_path('uploads/categories'), 0777, true);
-            }
-
-            $ImgName = time() . '.' . $img->getClientOriginalExtension();
-            $img->move(public_path('uploads/categories'), $ImgName);
+        if ($request->hasFile('category_img')) {
+            $image = $request->file('category_img');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/categories'), $filename);
+            $category->category_img = $filename;
         }
 
-        Category::create([
-            'category_name' => $request->category_name,
-            'category_descrbtion' => $request->category_descrbtion,
-            'category_img' => $ImgName,
-            'mall_id' => $request->mall_id, 
-        ]);
+        $category->save();
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('categories.index')->with('success', 'Category added successfully!');
     }
 
+    // عرض كاتيجوري محددة بناءً على ID
     public function show($id)
     {
-        $category = Category::with('mall')->where('category_id', $id)->firstOrFail(); 
+        $category = Category::with('mall')->where('category_id', $id)->where('mall_id', Auth::user()->mall_id)->firstOrFail();
         return view('dashboard.categories.show', compact('category'));
     }
 
+    // عرض صفحة التعديل على كاتيجوري معينة
     public function edit($id)
     {
-        $category = Category::where('category_id', $id)->firstOrFail();
-        $malls = Mall::all(); 
-        return view('dashboard.categories.edit', compact('category', 'malls'));
+        $category = Category::where('category_id', $id)->where('mall_id', Auth::user()->mall_id)->firstOrFail();
+        return view('dashboard.categories.edit', compact('category'));
     }
 
+    // تحديث بيانات كاتيجوري معينة
     public function update(Request $request, $id)
     {
         $request->validate([
             'category_name' => 'required',
-            'category_descrbtion' => 'required',
-            'category_img' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'mall_id' ,
+            'category_descrbtion' => 'nullable|string|max:1000',
+            'category_img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $category = Category::where('category_id', $id)->first();
+        $category = Category::where('category_id', $id)->where('mall_id', Auth::user()->mall_id)->firstOrFail();
 
-        $img = $request->file('category_img');
-        if ($img) {
-            $imgName = time() . '.' . $img->getClientOriginalExtension();
-            $img->move(public_path('uploads/categories'), $imgName);
+        if ($request->hasFile('category_img')) {
+            $image = $request->file('category_img');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/categories'), $filename);
 
             if ($category->category_img && file_exists(public_path('uploads/categories/' . $category->category_img))) {
                 unlink(public_path('uploads/categories/' . $category->category_img));
             }
-        } else {
-            $imgName = $category->category_img;
+            $category->category_img = $filename;
         }
 
-        $category->update([
-            'category_name' => $request->category_name,
-            'category_descrbtion' => $request->category_descrbtion,
-            'category_img' => $imgName,
-            'mall_id' => $request->mall_id ? $request->mall_id : $category->mall_id,
-        ]);
+        $category->category_name = $request->category_name;
+        $category->category_descrbtion = $request->category_descrbtion;
+        $category->save();
 
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
 
+    // حذف كاتيجوري معينة
     public function destroy($id)
     {
-        $category = Category::where('category_id', $id)->first();
-        
-        if ($category) {
-            $filePath = public_path('uploads/categories/' . $category->category_img);
-            
-            if ($category->category_img && file_exists($filePath)) {
-                unlink($filePath);
+        $category = Category::where('category_id', $id)->where('mall_id', Auth::user()->mall_id)->firstOrFail();
+
+        if ($category->category_img && file_exists(public_path('uploads/categories/' . $category->category_img))) {
+            unlink(public_path('uploads/categories/' . $category->category_img));
+        }
+
+        $category->delete();
+        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+    }
+
+    // جلب الكاتيجوري للمول المرتبط بالبريد الإلكتروني
+    public function getMallCategoriesByEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            $mallCategories = [];
+            $malls = Mall::where('user_id', $user->id)->get();
+
+            foreach ($malls as $mall) {
+                $categories = Category::where('mall_id', $mall->mall_id)->get();
+                $mallCategories[$mall->mall_id] = [
+                    'mall_name' => $mall->mall_name,
+                    'categories' => $categories
+                ];
             }
 
-            $category->delete();
-            return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+            return response()->json($mallCategories); 
         } else {
-            return redirect()->route('categories.index')->with('error', 'Category not found.');
+            return response()->json(['message' => 'User not found'], 404);
         }
     }
-
-//////////////////////////////////////////////////////////////////////////////////////////////
-public function getMallCategoriesByEmail(Request $request)
-{
-    $request->validate(['email' => 'required|email']);
-
-    // الحصول على المستخدم بناءً على البريد الإلكتروني
-    $user = User::where('email', $request->email)->first();
-
-    // تحقق مما إذا كان المستخدم موجودًا
-    if ($user) {
-        // الحصول على المولات المرتبطة بالمستخدم
-        $malls = Mall::where('user_id', $user->id)->get();
-
-        // مصفوفة لتخزين الكاتيجوري الخاصة بكل مول
-        $mallCategories = [];
-
-        // استخرج الكاتيجوري لكل مول
-        foreach ($malls as $mall) {
-            $categories = Category::where('mall_id', $mall->mall_id)->get();
-            $mallCategories[$mall->mall_id] = [
-                'mall_name' => $mall->mall_name,
-                'categories' => $categories
-            ];
-        }
-
-        return response()->json($mallCategories); // إعادة البيانات بصيغة JSON
-    } else {
-        return response()->json(['message' => 'User not found'], 404);
-    }
-}
-
-public function createcategory()
-{
-    // هنا يمكنك إضافة المنطق لإنشاء الكاتيجوري إذا لزم الأمر
-    return view('dashboard.categories.create');
-}
-
-// باقي الطرق مثل index، store، edit، update، destroy
-
- 
-
 }

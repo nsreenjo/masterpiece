@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,13 +13,13 @@ class Category extends Model
     protected $fillable = [
         'category_name',
         'category_img',
-        'mall_id',
+        'mall_id', // هذا الحقل يتواجد لربط الفئة بالمول
         'category_descrbtion',
     ];
 
     public function mall()
     {
-        return $this->belongsTo(Mall::class, 'mall_id');
+        return $this->belongsTo(Mall::class, 'mall_id'); // علاقة بين الفئة والمول
     }
 
     public function products()

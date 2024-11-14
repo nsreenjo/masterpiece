@@ -9,10 +9,25 @@
     <div class="card">
         <h5 class="card-header">Mall Details</h5>
         <div class="card-body">
+
+
+
+ <!-- ////////////////////////////////////////// -->
+ <div class="form-group mb-6">
+ <div class="mb-3">
+                        <label for="userName"class="form-label">User Name</label>
+                        <p>  {{ Auth::user()->user_first_name }}</p>
+                    </div>
+                    </div>
+                    <!-- ////////////////////////////////////// -->
+
             <div class="mb-3">
                 <label for="mall_id" class="form-label">Mall ID:</label>
                 <p >{{$mall->mall_id}} </p>
             </div>
+
+
+
             <div class="mb-3">
                 <label for="mall_name" class="form-label">Mall Name:</label>
                 <p>  {{ $mall->mall_name }}</p>

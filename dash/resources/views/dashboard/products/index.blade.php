@@ -1,13 +1,13 @@
 @extends('dashboard.layout.master')
 @section('title', 'products')
 @section('content')
-    <div class="text-left">
-    <a href="{{ route('products.create') }}" class="btn btn-success waves-effect waves-light">Add product</a>
+    <div class="text-left mb-3">
+        <a href="{{ route('products.create') }}" class="btn btn-success waves-effect waves-light">Add product</a>
     </div>
-    <div class="card">
+    <div class="card  mt-3 ms-3">
         <h5 class="card-header">product</h5>
-        <div class="table-responsive text-nowrap">
-            <table class="table">
+        <div class="table-responsive text-nowrap mt-3 "> <!-- إضافة مسافة أعلى الجدول وأيضًا إلى اليسار -->
+        <table class="table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -22,11 +22,9 @@
                 <tbody class="table-border-bottom-0">
                     @foreach($products as $product)
                         <tr>
-                             
                             <td>{{ $product->product_id }}</td>
                             <td>{{ $product->category->category_name }}</td>
                             <td><img src="{{ asset('uploads/products/' . $product->product_image) }}" alt="$product Logo" width="50"></td>
-
                             <td>{{ $product->product_name }}</td>
                             <td>{{ $product->product_descrbtion }}</td>
                             <td>{{ $product->product_price }}</td>
@@ -37,7 +35,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger btn-sm dlt-btn-t" onclick="confirmDelete({{ $product->product_id }})">Delete</button>
-                                    </form>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -45,7 +43,6 @@
             </table>
         </div>
     </div>
-
 
     <script>
         // Wait until the DOM is fully loaded
@@ -75,5 +72,3 @@
         });
     </script>
 @endsection
-
-

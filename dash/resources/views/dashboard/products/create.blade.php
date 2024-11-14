@@ -25,14 +25,15 @@
 
                     <!-- Select for Category -->
                     <div class="form-floating form-floating-outline mb-6">
-                        <select name="category_id" class="form-control" id="exampleFormControlSelect1">
-                            <option value="" disabled selected>Select Category</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->category_id }}" {{ old('category_id') == $category->category_id ? 'selected' : '' }}>
-                                    {{ $category->category_name }}
-                                </option>
-                            @endforeach
+                    <select name="category_id" class="form-control" id="exampleFormControlSelect1">
+                   <option value="" disabled selected>Select Category</option>
+                    @foreach($categories as $category)
+                         <option value="{{ $category->category_id }}" {{ old('category_id') == $category->category_id ? 'selected' : '' }}>
+                          {{ $category->category_name }}
+                         </option>
+                       @endforeach
                         </select>
+
                         <label for="exampleFormControlSelect1">Category</label>
                     </div>
 
