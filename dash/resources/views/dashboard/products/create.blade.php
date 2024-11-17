@@ -49,6 +49,11 @@
                         <label for="exampleFormControlInput3">Description</label>
                     </div>
 
+                    <div class="form-floating form-floating-outline mb-6">
+                        <input type="number" name="quantity" value="{{ old('quantity') }}" class="form-control" id="exampleFormControlInput2" placeholder="Product Price">
+                        <label for="exampleFormControlInput2">quantity</label>
+                    </div>
+
                     <!-- Product Price -->
                     <div class="form-floating form-floating-outline mb-6">
                         <input type="number" name="product_price" value="{{ old('product_price') }}" class="form-control" id="exampleFormControlInput2" placeholder="Product Price">

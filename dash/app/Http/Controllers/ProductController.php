@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Category;
-use Illuminate\Support\Facades\Auth;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -14,17 +14,13 @@ class ProductController extends Controller
      */
     public function index()
     {
-        // الحصول على دور المستخدم (أو يمكنك التحقق من نوع المستخدم إذا كنت تستخدم طريقة مختلفة لتحديد الأدوار)
         $user = Auth::user();
-    
-        // إذا كان المستخدم هو سوبر أدمن، استرجع جميع المنتجات
-        if ($user->type === 'superAdmin') { // استبدل 'role' و 'super_admin' بالقيم الصحيحة من مشروعك
+
+        if ($user->type === 'superAdmin') {
             $productsFromDB = Product::with('category')->get();
         } else {
-            // الحصول على معرف المول الخاص بالمستخدم الحالي
             $userMallId = $user->mall_id;
-    
-            // استرجاع المنتجات الخاصة بالمول فقط
+
             $productsFromDB = Product::with(['category' => function ($query) use ($userMallId) {
                 $query->where('mall_id', $userMallId);
             }])
@@ -33,33 +29,25 @@ class ProductController extends Controller
             })
             ->get();
         }
-    
+
         return view("dashboard.products.index", ["products" => $productsFromDB]);
     }
-    
-    
 
     /**
      * Show the form for creating a new resource.
      */
-   public function create()
-{
-    $userMallId = Auth::user()->mall_id; // الحصول على معرف المول الخاص بالمستخدم
-    
-    // جلب الفئات الخاصة بالمول فقط
-    $categories = Category::where('mall_id', $userMallId)->get();
+    public function create()
+    {
+        $userMallId = Auth::user()->mall_id;
 
-    // إذا لم يتم العثور على فئات، يمكن تقديم رسالة أو إجراء آخر
-    if ($categories->isEmpty()) {
-        // يمكن إضافة منطق إضافي هنا إذا كان ضرورياً
+        $categories = Category::where('mall_id', $userMallId)->get();
+
+        if ($categories->isEmpty()) {
+            // يمكنك إضافة منطق إضافي هنا إذا كان هناك ضرورة
+        }
+
+        return view('dashboard.products.create', compact('categories'));
     }
-
-    return view('dashboard.products.create', compact('categories')); // تمرير الفئات إلى العرض
-}
-
-    
-    
-
 
     /**
      * Store a newly created resource in storage.
@@ -72,28 +60,28 @@ class ProductController extends Controller
             'product_price' => 'required',
             'product_descrbtion' => 'required',
             'category_id' => 'required|exists:categories,category_id',
+            'quantity' => 'required|integer|min:0',
         ]);
-    
+
         $imgName = null;
-    
+
         if ($request->hasFile('product_image')) {
             $img = $request->file('product_image');
             $imgName = time() . '.' . $img->getClientOriginalExtension();
             $img->move(public_path('uploads/products'), $imgName);
         }
-    
-        // Store the product in the database
+
         Product::create([
             'product_name' => $request->product_name,
             'product_image' => $imgName,
             'product_price' => $request->product_price,
             'product_descrbtion' => $request->product_descrbtion,
             'category_id' => $request->category_id,
+            'quantity' => $request->quantity,
         ]);
-    
+
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
-    
 
     /**
      * Display the specified resource.
@@ -102,7 +90,7 @@ class ProductController extends Controller
     {
         $product = Product::where('product_id', $id)->first();
 
-        return view('dashboard.products.show', compact('product'));  
+        return view('dashboard.products.show', compact('product'));
     }
 
     /**
@@ -111,10 +99,9 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::where('product_id', $id)->firstOrFail();
-        $categories = Category::all(); 
+        $categories = Category::all();
 
-        return view('dashboard.products.edit', compact('product', 'categories')); 
-        // return ("ht");
+        return view('dashboard.products.edit', compact('product', 'categories'));
     }
 
     /**
@@ -128,51 +115,53 @@ class ProductController extends Controller
             'product_price' => 'required',
             'product_descrbtion' => 'required',
             'category_id' => 'required|exists:categories,category_id',
+            'quantity' => 'required|integer|min:0',
         ]);
-    
+
         $product = Product::where('product_id', $id)->first();
-    
+
         if ($request->hasFile('product_image')) {
             $img = $request->file('product_image');
             $imgName = time() . '.' . $img->getClientOriginalExtension();
-            $img->move(public_path('uploads/products'), $imgName); 
-            
+            $img->move(public_path('uploads/products'), $imgName);
+
             if ($product->product_image) {
                 unlink(public_path('uploads/products/' . $product->product_image));
             }
         } else {
-            $imgName = $product->product_image; 
+            $imgName = $product->product_image;
         }
-    
+
         $product->update([
             'product_name' => $request->product_name,
             'product_image' => $imgName,
             'product_price' => $request->product_price,
             'product_descrbtion' => $request->product_descrbtion,
             'category_id' => $request->category_id,
+            'quantity' => $request->quantity,
         ]);
-    
+
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        $product= Product::where('product_id', $id)->first();
-        
+        $product = Product::where('product_id', $id)->first();
+
         if ($product) {
             $filePath = public_path('uploads/products/' . $product->product_image);
-            
+
             if (file_exists($filePath)) {
                 unlink($filePath);
             }
-    
+
             $product->delete();
-            return redirect()->route('products.index')->with('success', 'product deleted successfully.');
+            return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
         } else {
-            return redirect()->route('products.index')->with('error', 'product not found.');
+            return redirect()->route('products.index')->with('error', 'Product not found.');
         }
     }
 }

@@ -16,6 +16,8 @@
                         <th>Name</th>
                         <th>Description</th>
                         <th>price</th>
+                        <th>quantity</th>
+
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -28,6 +30,8 @@
                             <td>{{ $product->product_name }}</td>
                             <td>{{ $product->product_descrbtion }}</td>
                             <td>{{ $product->product_price }}</td>
+                            <td>{{ $product->quantity }}</td>
+
                             <td>
                                 <a href="{{ route('products.show', $product->product_id) }}" class="btn btn-info btn-sm">View</a>
                                 <a href="{{ route('products.edit', $product->product_id) }}" class="btn btn-primary btn-sm">Edit</a>

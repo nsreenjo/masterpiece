@@ -18,6 +18,7 @@ class Product extends Model
         'product_descrbtion',
         'product_price',
         'category_id',
+        'quantity'
         
     ];
 
@@ -55,5 +56,11 @@ class Product extends Model
     public function order()
     {
         return $this->hasOne(order::class, 'product_id');
+    } 
+
+
+    public function products()
+    {
+        return $this->hasMany(User::class, 'user_id');
     } 
 }

@@ -63,12 +63,24 @@ Route::post('/update-cart', [ShoppingCartController::class, 'updateCart'])->name
 Route::delete('/remove-from-cart/{productId}', [ShoppingCartController::class, 'removeFromCart'])->name('cart.remove');
 
 
-Route::get('cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-Route::post('cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::post('cart/delete/{id}', [CartController::class, 'deleteCartItem'])->name('cart.delete');
-Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+// Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+// Route::post('cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+// Route::post('cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+// Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::GET('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
+Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+
+
+
+// Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+// Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+// Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
+Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 
 
 

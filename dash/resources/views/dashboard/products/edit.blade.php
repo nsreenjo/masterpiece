@@ -42,6 +42,12 @@
                     </div>
 
                     <div class="form-floating form-floating-outline mb-6">
+                        <input type="text" name="quantity" value="{{ $product->quantity }}" class="form-control" id="productName" placeholder="Product Name">
+                        <label for="productName">quantity</label>
+                    </div>
+
+
+                    <div class="form-floating form-floating-outline mb-6">
                         <select name="category_id" class="form-control" id="categorySelect">
                             @foreach($categories as $category)
                                 <option value="{{ $category->category_id }}" {{ $product->category_id == $category->category_id ? 'selected' : '' }}>

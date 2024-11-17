@@ -51,9 +51,9 @@ class User extends Authenticatable
         return $this->hasMany(Testimonial::class, 'user_id');
     }
 
-    public function shoppingCart()
+    public function Carts()
     {
-        return $this->hasOne(ShoppingCart::class, 'user_id');
+        return $this->hasOne(Cart::class, 'user_id');
     }
 
     public function ratings()

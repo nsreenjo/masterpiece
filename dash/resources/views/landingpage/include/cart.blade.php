@@ -1,3 +1,7 @@
+@php
+$cart = json_decode(Cookie::get('cart', json_encode([])), true);
+@endphp
+
 <div class="wrap-header-cart js-panel-cart">
     <div class="s-full js-hide-cart"></div>
 
@@ -13,47 +17,51 @@
         </div>
 
         <div class="header-cart-content flex-w js-pscroll">
-            @if(session('cart') && count(session('cart')) > 0)
-                <ul class="header-cart-wrapitem w-full">
-                    @foreach(session('cart') as $productId => $item)
+            <ul class="header-cart-wrapitem w-full">
+                @foreach ($cart as $cartItem)
+                    @php
+                        $product = \App\Models\Product::find($cartItem['product_id']);
+                    @endphp
+                    @if ($product)
                         <li class="header-cart-item flex-w flex-t m-b-12">
                             <div class="header-cart-item-img">
-                                <img src="{{ asset('assets/images/' . $item['product_image']) }}" alt="IMG">
+                                <img src="{{ asset('uploads/products/' . $product->product_image) }}" alt="Product Image">
                             </div>
-
                             <div class="header-cart-item-txt p-t-8">
                                 <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                                    {{ $item['product_name'] }}
+                                    {{ $product->product_name }}
                                 </a>
 
                                 <span class="header-cart-item-info">
-                                    {{ $item['quantity'] }} x ${{ $item['product_price'] }}
+                                    {{ $cartItem['quantity'] ?? 0 }} x {{ number_format($product->product_price ?? 0, 2) }} JOD
                                 </span>
+
+                                <a href="{{ route('cart.remove', $cartItem['product_id']) }}" class="btn btn-danger btn-sm">
+                                    Remove
+                                </a>
                             </div>
                         </li>
-                    @endforeach
-                </ul>
+                    @endif
+                @endforeach
+            </ul>
 
-                <div class="w-full">
-                    <div class="header-cart-total w-full p-tb-40">
-                        Total: ${{ array_sum(array_map(function ($item) {
-                            return $item['quantity'] * $item['product_price'];
-                        }, session('cart'))) }}
-                    </div>
-
-                    <div class="header-cart-buttons flex-w w-full">
-                        <a href="{{ route('cart.index') }}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
-                            View Cart
-                        </a>
-
-                        <a href="{{ route('cart.checkout') }}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-                            Check Out
-                        </a>
-                    </div>
+            <div class="w-full">
+                <div class="header-cart-total w-full p-tb-40">
+                    Total: {{ number_format(array_sum(array_map(function ($item) {
+                        return ($cartItem['quantity'] ?? 0) * ($cartItem['product_price'] ?? 0);
+                    }, $cart)), 2) }} JOD
                 </div>
-            @else
-                <p>Your cart is empty.</p>
-            @endif
+
+                <div class="header-cart-buttons flex-w w-full">
+                    <a href="{{ route('cart.index') }}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
+                        View Cart
+                    </a>
+
+                    <a href="{{ route('cart.checkout') }}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+                        Check Out
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

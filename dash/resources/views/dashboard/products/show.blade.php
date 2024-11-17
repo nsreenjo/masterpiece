@@ -27,6 +27,11 @@
                 <p>{{ $product->product_price }} JOD</p>
             </div>
             <div class="mb-3">
+                <label for="product_price" class="form-label">quantity:</label>
+                <p>{{ $product->quantity}} </p>
+            </div>
+
+            <div class="mb-3">
                 <label for="category_id" class="form-label">Category:</label>
                 <p>{{ $product->category->category_name }}</p>
             </div>

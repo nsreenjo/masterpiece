@@ -17,6 +17,8 @@
                 $table->string('product_name');
                 $table->text('product_descrbtion');
                 $table->decimal('product_price', 8, 2);
+                $table->string('quantity');
+
 
                 
                 $table->unsignedBigInteger('category_id')->nullable();

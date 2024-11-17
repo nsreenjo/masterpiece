@@ -16,6 +16,7 @@ class LandingPageController extends Controller
         $frontmalls = Mall::all();
         $categories = Category::all();
         $allProducts = Product::all(); // Change variable name to $allProducts
+      
         return view('landingpage.layout.app', compact('frontmalls', 'allProducts','categories'));
     }
 

@@ -9,7 +9,6 @@
 
 
 	<!-- Cart -->
-	
 
 	@include('landingpage.include.cart')
 
