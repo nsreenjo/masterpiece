@@ -29,4 +29,11 @@ class Mall extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+
+    public function order()
+    {
+        return $this->belongsTo(MOrder::class, 'order_id');
+    }
+
 }

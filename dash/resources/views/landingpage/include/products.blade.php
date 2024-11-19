@@ -58,3 +58,21 @@
         </div>
     </div>
 </section>
+
+<style>
+    .block2-pic {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-top: 90%; /* 16:9 aspect ratio */
+    }
+
+    .block2-pic img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ensure the image covers the area without distortion */
+    }
+</style>

@@ -21,6 +21,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ContantController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ShoppingCartController;
+use App\Http\Controllers\OrderController;
+
 
 
 
@@ -63,10 +65,7 @@ Route::post('/update-cart', [ShoppingCartController::class, 'updateCart'])->name
 Route::delete('/remove-from-cart/{productId}', [ShoppingCartController::class, 'removeFromCart'])->name('cart.remove');
 
 
-// Route::get('cart', [CartController::class, 'index'])->name('cart.index');
-// Route::post('cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-// Route::post('cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
-// Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
@@ -76,9 +75,7 @@ Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.ch
 
 
 
-// Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-// Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-// Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
 
 Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 
@@ -219,3 +216,15 @@ Route::get('/shop', [shopController::class, 'index'])->name('shop.index');
 // Route::get('/aswaqaltawfer', [AswaqController::class, 'index'])->name('aswaq.index');
 // Route::get('/mamoncenter', [MamonController::class, 'index'])->name('mamon.index');
 
+//////////////////////// order ///////////////////////////////////////
+
+Route::get('/dashboard/orders', [OrderController::class, 'index'])->name('orders.index');
+
+Route::post('dashboard/orders', [OrderController::class, 'store'])->name('orders.store');
+
+Route::get('dashboard/orders/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+Route::put('dashboard/orders/{id}', [OrderController::class, 'update'])->name('orders.update');
+
+Route::get('dashboard/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+
+Route::delete('dashboard/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');

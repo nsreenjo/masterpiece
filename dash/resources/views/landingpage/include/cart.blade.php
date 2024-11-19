@@ -1,5 +1,9 @@
 @php
 $cart = json_decode(Cookie::get('cart', json_encode([])), true);
+ $subtotal = 0;
+        foreach ($cart as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
 @endphp
 
 <div class="wrap-header-cart js-panel-cart">
@@ -47,9 +51,7 @@ $cart = json_decode(Cookie::get('cart', json_encode([])), true);
 
             <div class="w-full">
                 <div class="header-cart-total w-full p-tb-40">
-                    Total: {{ number_format(array_sum(array_map(function ($item) {
-                        return ($cartItem['quantity'] ?? 0) * ($cartItem['product_price'] ?? 0);
-                    }, $cart)), 2) }} JOD
+                  {{ $subtotal }} JOD
                 </div>
 
                 <div class="header-cart-buttons flex-w w-full">

@@ -56,8 +56,8 @@ class ProductController extends Controller
     {
         $request->validate([
             'product_name' => 'required',
-            'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'product_price' => 'required',
+            'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp,avif|max:2048',
+            'product_price' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
             'product_descrbtion' => 'required',
             'category_id' => 'required|exists:categories,category_id',
             'quantity' => 'required|integer|min:0',
@@ -111,7 +111,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'product_name' => 'required',
-            'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp,avif|max:2048',
             'product_price' => 'required',
             'product_descrbtion' => 'required',
             'category_id' => 'required|exists:categories,category_id',

@@ -64,6 +64,13 @@
                 <i class="ri-chat-3-fill" style="padding-right: 8px;"></i>
                 <div data-i18n="Basic">Contant</div>
             </a>
+        </li> 
+
+        <li class="menu-item">
+            <a href="{{route('orders.index')}}" class="menu-link">
+                <i class="ri-list-unordered"  style="padding-right: 8px;"></i>
+                <div data-i18n="Basic">order</div>
+            </a>
         </li>
 
     </ul>

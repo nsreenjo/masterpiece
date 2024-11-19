@@ -40,7 +40,7 @@ class CategoryController extends Controller
         $request->validate([
             'category_name' => 'required|string|max:255',
             'category_descrbtion' => 'nullable|string|max:1000',
-            'category_img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_img' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
         ]);
 
         $category = new Category();
@@ -80,7 +80,7 @@ class CategoryController extends Controller
         $request->validate([
             'category_name' => 'required',
             'category_descrbtion' => 'nullable|string|max:1000',
-            'category_img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_img' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
         ]);
 
         $category = Category::where('category_id', $id)->where('mall_id', Auth::user()->mall_id)->firstOrFail();
